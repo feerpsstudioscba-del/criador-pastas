@@ -25,26 +25,13 @@
       "renderer.js",
       "package.json",
       "resources/**/*",
+      "scripts/**/*",
       "node_modules/**/*"
     ],
     "extraResources": [
       {
-        "from": "../GIF EXPORT/dist",
+        "from": "resources/gif-export",
         "to": "gif-export",
-        "filter": [
-          "GIF-Still-Exporter-CLI.exe"
-        ]
-      },
-      {
-        "from": "../GIF EXPORT/IMAGENS",
-        "to": "gif-export/IMAGENS",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "../GIF EXPORT/FONTS",
-        "to": "gif-export/FONTS",
         "filter": [
           "**/*"
         ]

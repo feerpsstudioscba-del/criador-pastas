@@ -1,9 +1,7 @@
-name: Build and Release
+name: Build All-in-One
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
     branches: [ main, master ]
   release:
     types: [published]
@@ -11,6 +9,7 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    name: Build Windows
 
     steps:
     - name: Checkout code
@@ -33,6 +32,14 @@ jobs:
 
     - name: Install Node.js dependencies
       run: npm install
+
+    - name: Create GIF Export stub (if missing)
+      shell: powershell
+      run: |
+        if (-not (Test-Path "resources/gif-export")) {
+          New-Item -ItemType Directory -Path "resources/gif-export" -Force | Out-Null
+          Add-Content -Path "resources/gif-export/.gitkeep" -Value ""
+        }
 
     - name: Build Windows executable
       run: npm run build
@@ -40,11 +47,12 @@ jobs:
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Font-Converter-Windows
+        name: All-in-One-Windows
         path: dist/*.exe
 
   build-mac:
     runs-on: macos-latest
+    name: Build Mac
 
     steps:
     - name: Checkout code
@@ -68,41 +76,44 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
+    - name: Create GIF Export stub (if missing)
+      run: |
+        mkdir -p resources/gif-export
+        touch resources/gif-export/.gitkeep
+
     - name: Build Mac app
       run: npm run build:mac
 
     - name: Upload Mac artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Font-Converter-Mac
+        name: All-in-One-Mac
         path: dist/*.dmg
 
-  release:
+  release-artifacts:
     needs: [build-windows, build-mac]
     runs-on: ubuntu-latest
+    name: Create Release
     if: github.event_name == 'release'
 
     steps:
     - name: Download Windows artifact
       uses: actions/download-artifact@v4
       with:
-        name: Font-Converter-Windows
+        name: All-in-One-Windows
+        path: windows
 
     - name: Download Mac artifact
       uses: actions/download-artifact@v4
       with:
-        name: Font-Converter-Mac
+        name: All-in-One-Mac
+        path: mac
 
-    - name: Create release archives
-      run: |
-        zip -r Font-Converter-Windows.zip .
-        zip -r Font-Converter-Mac.zip .
-
-    - name: Release
+    - name: Upload Release Assets
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          Font-Converter-Windows.zip
-          Font-Converter-Mac.zip
+          windows/*.exe
+          mac/*.dmg
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
