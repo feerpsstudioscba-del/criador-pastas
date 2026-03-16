@@ -9,7 +9,8 @@
     "run": "electron .",
     "build:gif-exporter": "node scripts/ensure-gif-exporter.js",
     "build": "npm run build:gif-exporter && electron-builder --win portable",
-    "build:install": "npm run build:gif-exporter && electron-builder --win nsis --x64 --config.artifactName=all-in-one-install.${ext}"
+    "build:install": "npm run build:gif-exporter && electron-builder --win nsis --x64 --config.artifactName=all-in-one-install.${ext}",
+    "build:mac": "npm run build:gif-exporter && electron-builder --mac"
   },
   "author": "Maycon Vinicius",
   "license": "MIT",
@@ -70,6 +71,15 @@
       "createStartMenuShortcut": true,
       "runAfterFinish": false,
       "include": "build/installer.nsh"
+    },
+    "mac": {
+      "icon": "resources/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ]
     }
   },
   "devDependencies": {

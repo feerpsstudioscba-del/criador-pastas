@@ -1,0 +1,108 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [published]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install fonttools brotli
+
+    - name: Install Node.js dependencies
+      run: npm install
+
+    - name: Build Windows executable
+      run: npm run build
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Font-Converter-Windows
+        path: dist/*.exe
+
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install fonttools brotli
+
+    - name: Install Node.js dependencies
+      run: npm install
+
+    - name: Build Mac app
+      run: npm run build:mac
+
+    - name: Upload Mac artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Font-Converter-Mac
+        path: dist/*.dmg
+
+  release:
+    needs: [build-windows, build-mac]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+
+    steps:
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Font-Converter-Windows
+
+    - name: Download Mac artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Font-Converter-Mac
+
+    - name: Create release archives
+      run: |
+        zip -r Font-Converter-Windows.zip .
+        zip -r Font-Converter-Mac.zip .
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          Font-Converter-Windows.zip
+          Font-Converter-Mac.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
