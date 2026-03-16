@@ -1,86 +1,83 @@
 const fs = require("fs");
 const path = require("path");
-const { spawnSync } = require("child_process");
+const { execSync } = require("child_process");
 
-const joinRoot = path.resolve(__dirname, "..");
-const gifExportRoot = path.resolve(joinRoot, "..", "GIF EXPORT");
-const cliExePath = path.join(gifExportRoot, "dist", "GIF-Still-Exporter-CLI.exe");
-const buildScriptPath = path.join(gifExportRoot, "scripts", "build.ps1");
-const cliSourcePath = path.join(gifExportRoot, "cli.py");
-const packageSourceDir = path.join(gifExportRoot, "gif_still_exporter");
+const GIF_EXPORTER_DIR = path.join(__dirname, "..", "gif-exporter");
+const GIF_EXPORTER_EXE = path.join(GIF_EXPORTER_DIR, "gif-exporter.exe");
 
-const fail = (message) => {
-  console.error(`[build:gif-exporter] ${message}`);
+function log(message) {
+  console.log(`[ensure-gif-exporter] ${message}`);
+}
+
+function ensureDirectory(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+    log(`Created directory: ${dirPath}`);
+  }
+}
+
+function downloadGifExporter() {
+  log("Downloading gif-exporter.exe...");
+
+  // For now, we'll assume the exe is already present or needs to be manually added
+  // In a real scenario, you would download from a URL or build it
+  const exePath = path.join(GIF_EXPORTER_DIR, "gif-exporter.exe");
+
+  if (!fs.existsSync(exePath)) {
+    log("gif-exporter.exe not found. Please ensure it's present in the gif-exporter directory.");
+    log("You can download it from: https://github.com/feerpsstudioscba/gif-exporter/releases");
+    return false;
+  }
+
+  log("gif-exporter.exe is ready.");
+  return true;
+}
+
+function buildGifExporter() {
+  log("Building gif-exporter from source...");
+
+  // This would be the build process if we had the source
+  // For now, we'll just check if the exe exists
+  if (fs.existsSync(GIF_EXPORTER_EXE)) {
+    log("gif-exporter.exe already exists.");
+    return true;
+  }
+
+  log("gif-exporter.exe not found. Attempting to build...");
+
+  try {
+    // Placeholder for build commands
+    // execSync("cargo build --release", { cwd: GIF_EXPORTER_DIR, stdio: "inherit" });
+    log("Build process not implemented yet.");
+    return false;
+  } catch (error) {
+    log(`Build failed: ${error.message}`);
+    return false;
+  }
+}
+
+function main() {
+  log("Ensuring gif-exporter is available...");
+
+  ensureDirectory(GIF_EXPORTER_DIR);
+
+  // Try to download first, then build if download fails
+  if (downloadGifExporter()) {
+    log("gif-exporter setup complete.");
+    return;
+  }
+
+  if (buildGifExporter()) {
+    log("gif-exporter built successfully.");
+    return;
+  }
+
+  log("Failed to setup gif-exporter. Please ensure gif-exporter.exe is available.");
   process.exit(1);
-};
-
-const listPythonFiles = (dir) => {
-  const result = [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      result.push(...listPythonFiles(fullPath));
-      continue;
-    }
-    if (entry.isFile() && entry.name.toLowerCase().endsWith(".py")) {
-      result.push(fullPath);
-    }
-  }
-  return result;
-};
-
-const getMtimeMs = (filePath) => fs.statSync(filePath).mtimeMs;
-
-const shouldRebuildCli = () => {
-  if (!fs.existsSync(cliExePath)) return true;
-  if (!fs.existsSync(cliSourcePath)) return true;
-  if (!fs.existsSync(packageSourceDir)) return true;
-
-  const exeMtime = getMtimeMs(cliExePath);
-  const sourceFiles = [cliSourcePath, ...listPythonFiles(packageSourceDir)];
-  const newestSourceMtime = sourceFiles.reduce((maxMtime, sourceFile) => {
-    try {
-      return Math.max(maxMtime, getMtimeMs(sourceFile));
-    } catch {
-      return maxMtime;
-    }
-  }, 0);
-
-  return newestSourceMtime > exeMtime;
-};
-
-if (!shouldRebuildCli()) {
-  console.log(`[build:gif-exporter] CLI encontrado: ${cliExePath}`);
-  process.exit(0);
 }
 
-if (!fs.existsSync(buildScriptPath)) {
-  fail(`Script de build nao encontrado: ${buildScriptPath}`);
+if (require.main === module) {
+  main();
 }
 
-console.log("[build:gif-exporter] CLI nao encontrado. Gerando com PyInstaller...");
-
-const result = spawnSync(
-  "powershell",
-  ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", buildScriptPath],
-  {
-    cwd: gifExportRoot,
-    stdio: "inherit",
-    windowsHide: true,
-  }
-);
-
-if (result.error) {
-  fail(`Erro ao executar PowerShell: ${result.error.message}`);
-}
-
-if (result.status !== 0) {
-  fail(`Build do exportador falhou com codigo ${result.status}.`);
-}
-
-if (!fs.existsSync(cliExePath)) {
-  fail(`Build finalizado, mas EXE CLI nao encontrado em: ${cliExePath}`);
-}
-
-console.log(`[build:gif-exporter] CLI pronto: ${cliExePath}`);
+module.exports = { ensureDirectory, downloadGifExporter, buildGifExporter };

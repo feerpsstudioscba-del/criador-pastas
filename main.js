@@ -632,34 +632,34 @@ ipcMain.handle("gerador:generate", async (_event, { gifsDir, clickUrl, outputDir
 ipcMain.handle("font:convert", async (_event, { inputPath, outputPath }) => {
   try {
     const convertScriptPath = path.join(__dirname, "scripts", "convert-font.py");
-    
+
     // Create output directory
     fs.mkdirSync(outputPath, { recursive: true });
-    
+
     // Run the Python conversion script using the virtual environment Python
     const { spawn } = require("child_process");
     const pythonExe = path.join(__dirname, ".venv", "Scripts", "python.exe");
-    
+
     return new Promise((resolve) => {
       let output = "";
       let errorOutput = "";
-      
+
       // Check if we're running in a venv, if not use system python
       const pythonCmd = fs.existsSync(pythonExe) ? pythonExe : "python";
-      
+
       const pythonProcess = spawn(pythonCmd, [convertScriptPath, inputPath, outputPath]);
-      
+
       pythonProcess.stdout.on("data", (data) => {
         const line = data.toString();
         output += line;
       });
-      
+
       pythonProcess.stderr.on("data", (data) => {
         const line = data.toString();
         errorOutput += line;
         output += line;
       });
-      
+
       pythonProcess.on("close", (code) => {
         if (code === 0) {
           // Delete the original input file after successful conversion
@@ -669,23 +669,23 @@ ipcMain.handle("font:convert", async (_event, { inputPath, outputPath }) => {
           } catch (e) {
             output += `\n[AVISO] Nao foi possivel remover arquivo original: ${e.message}`;
           }
-          
-          resolve({ 
-            success: true, 
-            log: output 
+
+          resolve({
+            success: true,
+            log: output
           });
         } else {
-          resolve({ 
-            success: false, 
-            log: output || errorOutput || "Erro desconhecido na conversao" 
+          resolve({
+            success: false,
+            log: output || errorOutput || "Erro desconhecido na conversao"
           });
         }
       });
-      
+
       pythonProcess.on("error", (err) => {
-        resolve({ 
-          success: false, 
-          log: `Erro ao executar conversão: ${err.message}\n\nCertifique-se de que Python está instalado e fontTools está disponível.\nInstale com: pip install fontTools` 
+        resolve({
+          success: false,
+          log: `Erro ao executar conversão: ${err.message}\n\nCertifique-se de que Python está instalado e fontTools está disponível.\nInstale com: pip install fontTools`
         });
       });
     });
