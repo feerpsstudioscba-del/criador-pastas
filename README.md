@@ -46,6 +46,28 @@ Aplicação Electron completa para criação de pastas, geração de HTML/ZIP, e
 ### Conversor de Fontes
 ![Font Converter](https://via.placeholder.com/800x600/f8aa2a/241f56?text=Font+Converter)
 
+## 🤖 Builds Automatizados (GitHub Actions)
+
+O projeto agora possui **builds automatizados** via GitHub Actions! 🎉
+
+### Como Funciona
+- **Push automático**: Todo push nas branches `main` ou `master` dispara builds
+- **Multi-plataforma**: Builds simultâneos para Windows e Mac
+- **Artefatos**: Downloads diretos dos executáveis prontos
+- **Releases**: Builds automáticos em releases publicados
+
+### Downloads Automáticos
+1. Vá para a aba **"Actions"** no repositório GitHub
+2. Clique no workflow mais recente
+3. Na seção **"Artifacts"**, baixe:
+   - `Font-Converter-Windows` → Executável Windows
+   - `Font-Converter-Mac` → App Mac (.dmg)
+
+### Para Releases
+- Crie um **Release** no GitHub
+- Os builds são feitos automaticamente
+- Downloads ficam disponíveis na página do release
+
 ## 📦 Instalação
 
 ### Windows
