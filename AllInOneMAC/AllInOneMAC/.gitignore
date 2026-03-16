@@ -1,0 +1,6 @@
+# dependencias e artefatos locais
+node_modules/
+dist/
+build/
+*.log
+*.exe

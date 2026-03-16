@@ -1,0 +1,32 @@
+# Dependências e artefatos locais
+node_modules/
+dist/
+build/
+*.log
+*.exe
+*.rar
+*.blockmap
+builder-*
+
+# Ambiente Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos temporários
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Arquivos de sistema
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos específicos do projeto
+exclude.txt
+AllInOneMAC.zip

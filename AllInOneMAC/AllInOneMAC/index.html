@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-in-One</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #6b4bbc;
+      --bg-end: #2a276f;
+      --card: #ffffff;
+      --muted: #e9e8ec;
+      --text: #241f56;
+      --accent: #f8aa2a;
+      --accent-strong: #e39400;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Montserrat", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+        radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.06), transparent 22%),
+        linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+
+    .app {
+      width: min(1150px, 96vw);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 12px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      -webkit-app-region: drag;
+      width: 100%;
+    }
+
+    .title {
+      font-size: clamp(36px, 4vw, 54px);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0;
+      color: #f3f4ff;
+      text-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+    }
+
+    .logo {
+      width: 84px;
+      height: 84px;
+      border-radius: 24px;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      -webkit-app-region: no-drag;
+      flex-shrink: 0;
+      object-fit: contain;
+      background: #ffffff;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 26px 28px 28px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .layout-body {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 20px;
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .sidebar {
+      background: #f5f4fb;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: inset 0 0 0 1px rgba(36, 31, 86, 0.06);
+      -webkit-app-region: no-drag;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tab {
+      background: #ffffff;
+      color: var(--text);
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: inset 0 0 0 1px rgba(36, 31, 86, 0.06);
+      text-align: left;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    }
+
+    .content {
+      background: #fff;
+      border-radius: 20px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .pane {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 8px 8px;
+    }
+
+    .pane.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-label {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 10px 0 12px;
+      color: var(--text);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    input[type="text"],
+    textarea {
+      font-family: "Montserrat", "Segoe UI", sans-serif;
+      font-size: 16px;
+      padding: 14px 16px;
+      border: none;
+      background: var(--muted);
+      border-radius: 14px;
+      color: var(--text);
+      outline: none;
+      -webkit-app-region: no-drag;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      height: 52px;
+    }
+
+    .dropzone {
+      transition: box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .dropzone.dragging {
+      outline: 2px dashed var(--accent);
+      box-shadow: 0 0 0 4px rgba(248, 170, 42, 0.28);
+      background: #fdf5e3;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 210px;
+      resize: none;
+      line-height: 1.5;
+    }
+
+    select {
+      font-family: "Montserrat", "Segoe UI", sans-serif;
+      font-size: 15px;
+      padding: 12px 14px;
+      border: 1px solid #d5d3df;
+      border-radius: 12px;
+      background: #f8f7fb;
+      color: var(--text);
+      outline: none;
+      -webkit-app-region: no-drag;
+    }
+
+    .cta,
+    .primary {
+      border: none;
+      background: var(--accent);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 16px;
+      border-radius: 14px;
+      padding: 14px 20px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease;
+      -webkit-app-region: no-drag;
+    }
+
+    .cta {
+      min-width: 210px;
+      height: 52px;
+    }
+
+    .primary {
+      min-width: 200px;
+      align-self: flex-end;
+    }
+
+    .secondary {
+      border: 1px solid #d7d5e5;
+      background: #f7f7fb;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease;
+      -webkit-app-region: no-drag;
+    }
+
+    .secondary:hover {
+      background: #efedf8;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .ghost {
+      border: 1px solid #d7d5e5;
+      background: transparent;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .name-row input[type="text"] {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .cta:hover,
+    .primary:hover {
+      background: var(--accent-strong);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
+    }
+
+    .cta:active,
+    .primary:active {
+      transform: translateY(0);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-weight: 700;
+      color: var(--text);
+      min-height: 24px;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #5f5f6f;
+      margin-top: 6px;
+    }
+
+    .preset-picker {
+      margin: 6px 0 16px;
+    }
+
+    .preset-picker-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tiny-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #4b4768;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .preset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .preset-card {
+      border: 1px solid #eceaf2;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fbfbfe;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .preset-card header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .preset-name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .preset-meta {
+      font-size: 13px;
+      color: #6b6883;
+    }
+
+    .preset-items {
+      font-size: 13px;
+      color: #413c63;
+      margin: 0 0 10px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .preset-actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 8px;
+    }
+
+    .chip {
+      background: #f7f7fb;
+      border: 1px solid #dcd8ed;
+      color: #4b4768;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .option-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+      margin: 2px 0 8px;
+    }
+
+    .check-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #3e3963;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #f8aa2a;
+      -webkit-app-region: no-drag;
+    }
+
+    .log-box {
+      min-height: 220px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 960px) {
+      .input-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta {
+        width: 100%;
+      }
+
+      .hero {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .layout-body {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .tabs {
+        flex-direction: row;
+        width: 100%;
+      }
+
+      .tab {
+        flex: 1;
+        text-align: center;
+      }
+
+      .content {
+        max-height: none;
+        overflow: visible;
+        height: auto;
+        min-height: auto;
+      }
+
+      .name-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .name-row input[type=\"text\"] {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <h1 class="title">All-in-One</h1>
+      <img class="logo" src="resources/logo.png" alt="Logo do sistema">
+    </header>
+
+    <main class="card">
+      <div class="layout-body">
+        <aside class="sidebar">
+          <div class="tabs">
+            <button class="tab active" data-tab="create">Criar pastas</button>
+            <button class="tab" data-tab="presets">Presets</button>
+            <button class="tab" data-tab="gerador">Gerador HTML</button>
+            <button class="tab" data-tab="gifexport">Export GIF</button>
+            <button class="tab" data-tab="pdfcreate">Criar PDF</button>
+            <button class="tab" data-tab="fontconverter">Conversor de Fontes</button>
+          </div>
+        </aside>
+
+        <section class="content pane active" data-pane="create">
+          <label class="section-label" for="folderPath">Escolha o local de destino</label>
+          <div class="input-row">
+            <input type="text" id="folderPath" class="dropzone" placeholder="Selecione ou arraste a pasta onde as subpastas serao criadas" readonly>
+            <button class="cta" id="choosePath">Escolha o destino</button>
+          </div>
+
+          <div class="preset-picker">
+            <span class="tiny-label">Inserir preset</span>
+            <div class="preset-picker-row">
+              <select id="presetSelect">
+                <option value="">Selecione um preset</option>
+              </select>
+              <button class="secondary" id="applyPreset">Inserir</button>
+            </div>
+          </div>
+
+          <label class="section-label" for="folderList">Cole ou digite aqui os nomes das pastas, uma por linha*</label>
+          <textarea id="folderList" placeholder="Ex:\nFinanceiro\nProjetos\n2025 - Novo Cliente"></textarea>
+
+          <div class="hint">Use uma linha por pasta. Subpasta: indente com 2+ espacos abaixo da pasta pai (ou use "/": FORMATOS/300x250). Exemplo: FORMATOS (sem espacos) e na linha seguinte dois espacos + 120x600, dois espacos + 160x600.</div>
+
+          <div class="actions">
+            <button class="primary" id="createFolders">Criar Pastas</button>
+          </div>
+
+          <div class="status" id="status"></div>
+        </section>
+
+        <section class="content pane" data-pane="presets">
+          <div class="form-grid">
+            <div>
+              <label class="section-label" for="presetName">Nome do preset</label>
+              <div class="name-row">
+                <input type="text" id="presetName" placeholder="Ex: Pasta Raiz (para criacao de video)">
+                <button class="primary" id="savePreset">Salvar preset</button>
+                <button class="secondary" id="cancelPresetEdit" hidden>Cancelar</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="presetItems">Pastas do preset (uma por linha)</label>
+              <textarea id="presetItems" placeholder="Audio&#10;Imagens&#10;Assets&#10;Render&#10;FORMATOS/300x250"></textarea>
+              <div class="hint">Essas pastas serao criadas dentro do destino escolhido. Subpasta: indente a linha com 2+ espacos abaixo da pasta pai (ou use "/": FORMATOS/300x250). Exemplo: FORMATOS na linha sem espacos; na linha seguinte dois espacos + 120x600, dois espacos + 160x600.</div>
+            </div>
+          </div>
+
+          <div class="section-label" style="margin-top:16px;">Presets salvos</div>
+          <div class="preset-list" id="presetList"></div>
+        </section>
+
+        <section class="content pane" data-pane="gerador">
+          <div class="form-grid">
+            <div>
+              <label class="section-label" for="gifsPath">Pasta dos arquivos (GIF/PNG/JPG/BMP/MP4/MOV)</label>
+              <div class="chips">
+                <span class="chip">.gif</span>
+                <span class="chip">.png</span>
+                <span class="chip">.jpg</span>
+                <span class="chip">.jpeg</span>
+                <span class="chip">.bmp</span>
+                <span class="chip">.mp4</span>
+                <span class="chip">.mov</span>
+              </div>
+              <div class="input-row">
+                <input type="text" id="gifsPath" class="dropzone" placeholder="Selecione ou arraste a pasta dos arquivos" readonly />
+                <button class="secondary" id="browseGifs">Procurar...</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="geradorUrl">URL de clique</label>
+              <div class="input-row">
+                <input type="text" id="geradorUrl" placeholder="https://exemplo.com/click" />
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="outputPath">Pasta de saida (opcional)</label>
+              <div class="input-row">
+                <input type="text" id="outputPath" class="dropzone" placeholder="Por padrao usa a mesma pasta dos arquivos" readonly />
+                <button class="secondary" id="browseOutput">Procurar...</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="geradorMetrics">Codigo de metricas / campanha (opcional)</label>
+              <textarea id="geradorMetrics" placeholder="Texto salvo como comentario no HTML para controle interno" style="min-height:120px;"></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="generateHtmls">Gerar HTMLs e ZIPs</button>
+          </div>
+
+          <div class="status" id="geradorStatus"></div>
+        </section>
+
+        <section class="content pane" data-pane="gifexport">
+          <div class="form-grid">
+            <div>
+              <label class="section-label" for="gifInputPath">Pasta raiz dos GIFs</label>
+              <div class="input-row">
+                <input type="text" id="gifInputPath" class="dropzone" placeholder="Selecione ou arraste a pasta com arquivos .gif" readonly />
+                <button class="secondary" id="browseGifInput">Procurar...</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="gifOutputPath">Pasta de saida dos PNGs</label>
+              <div class="input-row">
+                <input type="text" id="gifOutputPath" class="dropzone" placeholder="Selecione ou arraste a pasta de saida" readonly />
+                <button class="secondary" id="browseGifOutput">Procurar...</button>
+              </div>
+            </div>
+
+            <div class="option-row">
+              <label class="check-item">
+                <input type="checkbox" id="gifRecursive">
+                Incluir subpastas na leitura
+              </label>
+              <label class="check-item">
+                <input type="checkbox" id="gifCreateSubfolders" checked>
+                Criar uma subpasta por GIF
+              </label>
+              <label class="check-item">
+                <input type="checkbox" id="gifVideoMode">
+                GIF de video (exportar todos os frames)
+              </label>
+              <label class="check-item">
+                <input type="checkbox" id="gifGeneratePdf" checked>
+                Gerar PDF e mesclar relatorio
+              </label>
+            </div>
+
+            <div>
+              <label class="section-label" for="gifMergePdfName">Nome do PDF mesclado</label>
+              <div class="input-row">
+                <input type="text" id="gifMergePdfName" value="RELATORIO-GERAL.pdf" placeholder="Ex: PACOTE-FINAL-CLIENTE.pdf" />
+              </div>
+              <div class="hint">Se nao terminar com .pdf, a extensao sera adicionada automaticamente.</div>
+            </div>
+
+            <div>
+              <label class="section-label" for="gifExporterLog">Log do processamento</label>
+              <textarea id="gifExporterLog" class="log-box" readonly placeholder="O resultado do export aparece aqui."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="secondary" id="openGifOutput">Abrir pasta de saida</button>
+            <button class="primary" id="processGifExport">Exportar</button>
+          </div>
+
+          <div class="status" id="gifExporterStatus"></div>
+        </section>
+
+        <section class="content pane" data-pane="pdfcreate">
+          <div class="form-grid">
+            <div>
+              <label class="section-label" for="pdfInputPath">Pasta de entrada (PNGs)</label>
+              <div class="input-row">
+                <input type="text" id="pdfInputPath" class="dropzone" placeholder="Selecione ou arraste a pasta raiz com PNGs e subpastas" readonly />
+                <button class="secondary" id="browsePdfInput">Procurar...</button>
+              </div>
+              <div class="hint">Leitura automatica de todas as subpastas para montar os PDFs individuais.</div>
+            </div>
+
+            <div>
+              <label class="section-label" for="pdfOutputPath">Pasta de saida (PDFs)</label>
+              <div class="input-row">
+                <input type="text" id="pdfOutputPath" class="dropzone" placeholder="Selecione ou arraste a pasta onde os PDFs serao gerados" readonly />
+                <button class="secondary" id="browsePdfOutput">Procurar...</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="section-label" for="pdfMergeName">Nome do PDF geral</label>
+              <div class="input-row">
+                <input type="text" id="pdfMergeName" value="RELATORIO-GERAL.pdf" placeholder="Ex: PACOTE-FINAL-CLIENTE.pdf" />
+              </div>
+              <div class="hint">Sera mesclado automaticamente com todos os PDFs individuais.</div>
+            </div>
+
+            <div>
+              <label class="section-label" for="pdfCreatorLog">Log da criacao de PDFs</label>
+              <textarea id="pdfCreatorLog" class="log-box" readonly placeholder="O resultado da criacao de PDFs aparece aqui."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="secondary" id="openPdfOutput">Abrir pasta de saida</button>
+            <button class="primary" id="processPdfCreate">Criar PDF</button>
+          </div>
+
+          <div class="status" id="pdfCreatorStatus"></div>
+        </section>
+
+        <section class="content pane" data-pane="fontconverter">
+          <div class="form-grid">
+            <div>
+              <label class="section-label" for="fontInput">Arquivo de fonte</label>
+              <div class="input-row">
+                <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2,.svg,.eot" />
+              </div>
+              <div class="hint">Selecione qualquer arquivo de fonte (.ttf, .otf, .woff, .woff2, .svg, .eot) e ele será convertido para os 5 formatos (WOFF, WOFF2, SVG, EOT, TTF).</div>
+            </div>
+
+            <div>
+              <label class="section-label" for="fontOutputPath">Pasta de saída</label>
+              <div class="input-row">
+                <input type="text" id="fontOutputPath" class="dropzone" placeholder="Selecione a pasta onde as fontes convertidas serão salvas" readonly />
+                <button class="secondary" id="browseFontOutput">Procurar...</button>
+              </div>
+              <div class="hint">Os arquivos serão salvos em uma subpasta 'converted-fonts'. Formatos já existentes não serão sobrescritos - apenas os novos serão criados.</div>
+            </div>
+
+            <div>
+              <label class="section-label" for="fontConverterLog">Log da conversão</label>
+              <textarea id="fontConverterLog" class="log-box" readonly placeholder="O resultado da conversão aparece aqui."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="secondary" id="openFontOutput">Abrir pasta de saída</button>
+            <button class="primary" id="convertFont">Converter Fonte</button>
+          </div>
+
+          <div class="status" id="fontConverterStatus"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
