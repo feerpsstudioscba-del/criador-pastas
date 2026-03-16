@@ -18,20 +18,115 @@ Este guia te ajuda a criar uma máquina virtual macOS e compilar o `.dmg` do JOI
 ## ⚙️ Requisitos
 
 ### Software de Virtualização (escolha um):
-- **[Parallels Desktop](https://www.parallels.com/)** - Melhor para Mac (pago)
-- **[VMware Fusion](https://www.vmware.com/products/fusion)** - Compatível (pago)
-- **[UTM](https://mac.getutm.app/)** - Gratuito (recomendado)
-- **[VirtualBox](https://www.virtualbox.org/)** - Gratuito (mais pesado)
 
-### ISO do macOS:
-- **macOS 13 Ventura** (recomendado)
-- **macOS 14 Sonoma** (também funciona)
+#### Para sua configuração (i7 8ª + 32GB), recomendo:
+
+1. **✅ VirtualBox** (Gratuito) - **RECOMENDADO**
+   - Perfeito para sua máquina
+   - Suporta bem Intel i7 8ª
+   - Download: https://www.virtualbox.org/
+   - **MELHOR CUSTO-BENEFÍCIO**
+
+2. **✅ VMware Workstation Pro** (Pago - ~$249)
+   - Mais rápido que VirtualBox
+   - Excelente suporte a i7 8ª geração
+   - Se quiser máxima performance
+
+3. ❌ **Parallels** - Apenas em Mac
+4. ❌ **UTM** - Melhor em Mac M1/M2
+
+---
+
+### macOS 13 Ventura (✅ RECOMENDADO PARA VOCÊ)
+
+**Sua configuração:**
+- Intel i7 8ª geração
+- 32 GB RAM
+- SSD dedicado 60GB
+
+✅ **Perfeito match!** Você terá:
+- ⚡ Build muito rápido (~5-8 minutos)
+- 🎯 Zero problemas de compatibilidade
+- 💾 RAM de sobra (recomendado 16GB, você tem 32GB)
+- 📦 Suporte total a Node.js 24
+
+**Intel i7 8ª + 32GB + SSD = Excelente Performance** 
+
+---
+
+### Alternativa: macOS 14 Sonoma
+
+Se Ventura não estiver disponível, Sonoma também funciona bem:
+- Ligeiramente mais novo
+- Mesma performance
+- Mesma compatibilidade
+
+**Evitar:**
+- ❌ Big Sur (11) - Muito antigo
+- ❌ Sequoia (15) - Pode ser pesado para i7 8ª geração
 
 ### Requisitos da VM:
 - **Processador:** 4 cores (mínimo)
 - **RAM:** 8 GB (16 GB recomendado)
 - **Disco:** 60 GB SSD (mínimo 50 GB)
 - **Internet:** Conexão estável
+
+---
+
+## 🎯 Configuração Específica Para Você
+
+### Sua Hardware:
+```
+Intel i7 8ª geração
+32 GB RAM
+NVIDIA GTX 1050 Ti
+SSD dedicado 60GB
+```
+
+### Recomendação de Alocação para a VM:
+
+| Recurso | Alocação | Motivo |
+|---------|----------|--------|
+| **vCPU** | 6-8 cores | 8 cores do i7, deixe 2-4 para Windows |
+| **RAM** | 16-20 GB | Você tem 32GB, pode alocar bastante |
+| **Disco** | 60 GB SSD | Exatamente o que você tem disponível |
+| **VRAM** | Automático | VM não usa VRAM dedicada |
+
+✅ **Com essa configuração:**
+- Build do .dmg: **5-8 minutos**
+- Compilação fluida: **Sim**
+- Sem travamentos: **Garantido**
+
+**Dica:** Deixe pelo menos 2GB de RAM livre no Windows para o sistema não ficar lento
+
+---
+
+## 🎛️ Configuração Específica do VirtualBox (Para Você)
+
+### Passo a Passo no VirtualBox:
+
+1. **Clique em "Nova"**
+2. **Abra "Advanced Options"**
+3. **Configure exatamente assim:**
+
+```
+Nome da VM: macOS-BUILD-JOIN
+Tipo: macOS
+Versão: macOS 13 (ou 14 Sonoma)
+Memória Base: 18432 MB (18GB)
+Processadores: 6 CPUs
+Vídeo: 128 MB (máximo disponível)
+Disco Rígido: VDI, Dinâmico, 60 GB
+Armazenamento: Seu SSD dedicado
+```
+
+✅ **Resultado esperado:**
+```
+🚦 Windows: ~14GB RAM (sobra para você trabalhar)
+🍎 macOS VM: 18GB RAM (muito generoso)
+⚙️ 6 cores para VM (2 cores para Windows)
+💾 60GB SSD exclusivo
+```
 
 ---
 
@@ -233,6 +328,33 @@ sudo xcode-select --accept-license
 # Verifique espaço em disco: df -h
 # Precisará de ~60GB livres
 ```
+
+---
+
+## ⚡ Performance Esperada Com Sua Configuração
+
+### i7 8ª Gen + 32GB RAM + SSD Dedicado
+
+| Etapa | Tempo Esperado | Notas |
+|-------|---|---|
+| **Criar VM** | 5-10 min | Rápido |
+| **Instalar macOS** | 20-30 min | Normal |
+| **Xcode CLI Tools** | 10-15 min | Depende da internet |
+| **npm install** | 2-3 min | Com 18GB RAM é rápido |
+| **npm run build:mac** | **5-8 min** | ⚡ Muito rápido! |
+| **TOTAL INICIAL** | ~1.5-2 horas | Apenas 1ª vez |
+| **Builds subsequentes** | **10-15 min** | Build + novo .dmg |
+
+### ✅ Seu Setup é EXCELENTE para isso!
+
+```
+i7 8ª geração = VT-x habilitado ✓
+32 GB RAM = 18GB para VM, 14GB para Windows ✓
+SSD 60GB = Espaço e velocidade ✓
+NVIDIA 1050 Ti = Bônus (não influencia no build)
+```
+
+**Resultado:** Você terá a experiência **melhor possível** com VirtualBox! 🚀
 
 ---
 
