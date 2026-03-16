@@ -17,10 +17,10 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.11.0'
+        node-version: '20.x'
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -32,17 +32,30 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install --legacy-peer-deps
 
-    - name: Build GIF Exporter
-      run: npm run build:gif-exporter
+    - name: Check build directory
+      run: dir build && dir dist 2>$null || echo "dist not created yet"
 
     - name: Build Windows app
       run: npm run build
+      continue-on-error: false
+
+    - name: Check if artifacts were created
+      run: |
+        if (Test-Path "dist/*.exe") {
+          Write-Host "✓ Windows executable created successfully"
+          Get-Item dist/*.exe
+        } else {
+          Write-Host "✗ No .exe files found in dist/"
+          Get-ChildItem dist/ -Recurse
+        }
 
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: JOIN-Windows
-        path: dist/*.exe
+        path: dist/
+        if-no-files-found: ignore
 
   build-mac:
     runs-on: macos-latest
@@ -54,10 +67,10 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.11.0'
+        node-version: '20.x'
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -69,14 +82,27 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install --legacy-peer-deps
 
-    - name: Build GIF Exporter
-      run: npm run build:gif-exporter
+    - name: Check build directory
+      run: ls -la build && ls -la dist 2>/dev/null || echo "dist not created yet"
 
     - name: Build Mac app
       run: npm run build:mac
+      continue-on-error: false
+
+    - name: Check if artifacts were created
+      run: |
+        if [ -f dist/*.dmg ]; then
+          echo "✓ Mac DMG created successfully"
+          ls -lh dist/
+        else
+          echo "✗ No .dmg files found in dist/"
+          find dist/ -type f
+        fi
 
     - name: Upload Mac artifact
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: JOIN-Mac
-        path: dist/*.dmg
+        path: dist/
+        if-no-files-found: ignore

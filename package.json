@@ -7,10 +7,9 @@
   "scripts": {
     "start": "electron .",
     "run": "electron .",
-    "build:gif-exporter": "node scripts/ensure-gif-exporter.js",
-    "build": "npm run build:gif-exporter && electron-builder --win portable",
-    "build:install": "npm run build:gif-exporter && electron-builder --win nsis --x64 --config.artifactName=all-in-one-install.${ext}",
-    "build:mac": "npm run build:gif-exporter && electron-builder --mac"
+    "build": "electron-builder --win portable",
+    "build:install": "electron-builder --win nsis --x64 --config.artifactName=all-in-one-install.${ext}",
+    "build:mac": "electron-builder --mac"
   },
   "author": "Maycon Vinicius",
   "license": "MIT",
